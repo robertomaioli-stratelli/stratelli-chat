@@ -1,0 +1,26 @@
+{
+  "name": "@stratelli/chat-api",
+  "version": "0.2.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -k \"tsc -w\" \"node --watch --env-file=.env.development dist/main.js\"",
+    "build": "tsc",
+    "start": "node dist/main.js",
+    "test": "tsx --test test/*.test.ts",
+    "migrate": "node dist/database/migrate.js"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.0.1",
+    "@nestjs/core": "^11.0.1",
+    "@nestjs/platform-express": "^11.0.1",
+    "express": "^5.2.1",
+    "pg": "^8.23.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1",
+    "typeorm": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "tsx": "^4.20.0"
+  }
+}

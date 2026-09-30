@@ -1,0 +1,30 @@
+{
+  "name": "stratelli-chat",
+  "version": "0.2.0",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -k -n api,web \"npm run dev -w @stratelli/chat-api\" \"npm run dev -w @stratelli/chat-web\"",
+    "build": "npm run build -w @stratelli/chat-web && npm run build -w @stratelli/chat-api",
+    "test": "npm run test -w @stratelli/chat-api",
+    "start": "npm run start -w @stratelli/chat-api",
+    "setup:local": "node scripts/setup-local.mjs",
+    "docker:up": "docker compose up --build -d",
+    "docker:down": "docker compose down",
+    "test:integration": "npm run build -w @stratelli/chat-api && node --env-file=apps/api/.env.development --test apps/api/test/integration/*.test.cjs",
+    "check": "npm run build && npm test",
+    "format:check": "prettier --check \"apps/*/src/**/*.{ts,tsx,css}\"",
+    "test:docker": "node scripts/check-container.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "concurrently": "^9.2.1",
+    "prettier": "^3.9.9",
+    "typescript": "~5.9.3"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

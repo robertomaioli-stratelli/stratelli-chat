@@ -1,0 +1,50 @@
+name: stratelli-chat-local
+x-app: &app
+  image: stratelli-chat:local
+  build: .
+  init: true
+  restart: "no"
+services:
+  db:
+    image: postgres:18-bookworm
+    environment:
+      POSTGRES_USER: chat_owner
+      POSTGRES_DB: chat_local
+      POSTGRES_PASSWORD: ${CHAT_DB_OWNER_PASSWORD:?Execute npm run setup:local}
+      CHAT_DB_APP_PASSWORD: ${CHAT_DB_APP_PASSWORD:?Execute npm run setup:local}
+    ports:
+      - "127.0.0.1:55433:5432"
+    volumes:
+      - chat_data:/var/lib/postgresql
+      - ./docker/init-db.sh:/docker-entrypoint-initdb.d/10-chat.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U chat_owner -d chat_local"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    mem_limit: 512m
+  migrate:
+    <<: *app
+    command: ["node", "apps/api/dist/database/migrate.js"]
+    environment:
+      CHAT_MIGRATION_DATABASE_URL: postgresql://chat_owner:${CHAT_DB_OWNER_PASSWORD}@db:5432/chat_local
+    depends_on:
+      db: { condition: service_healthy }
+  chat:
+    <<: *app
+    environment:
+      NODE_ENV: production
+      APP_ENV: homolog
+      CHAT_DEMO: "true"
+      CHAT_BASIC_USER: ${CHAT_BASIC_USER}
+      CHAT_BASIC_PASSWORD: ${CHAT_BASIC_PASSWORD}
+      CHAT_DATABASE_URL: postgresql://chat_app:${CHAT_DB_APP_PASSWORD}@db:5432/chat_local
+      CHAT_ALLOWED_ORIGINS: http://127.0.0.1:3101,http://localhost:3101
+    ports:
+      - "127.0.0.1:3101:3100"
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    mem_limit: 512m
+    cpus: 0.5
+volumes:
+  chat_data:

@@ -1,0 +1,25 @@
+name: Verificar Chat
+on:
+  push:
+    branches: [main, homolog]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run setup:local
+      - run: npm run check
+      - run: npm run docker:up
+      - run: npm run test:integration
+      - run: npm run test:docker
+      - if: always()
+        run: docker compose down
