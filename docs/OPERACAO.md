@@ -55,3 +55,7 @@ O comando usa `CHAT_MIGRATION_DATABASE_URL`, aplica apenas migrações pendentes
 - `GET /api/chat/ready`: consulta o schema do banco próprio, exige acesso. Não certifica IA nem a base da plataforma.
 
 Manter backup do banco fora do volume, com retenção acordada e restauração testada. `docker compose down` preserva os dados locais; **não usar `down -v`** se precisar mantê-los. A conta temporária não substitui permissões individuais nem o login do painel. Antes de uso real, concluir essa integração e definir retenção/exclusão dos históricos.
+
+## Segredos montados
+
+Opcionalmente, `CHAT_DATABASE_URL_FILE`, `CHAT_MIGRATION_DATABASE_URL_FILE` e `CHAT_BASIC_PASSWORD_FILE` apontam para arquivos de Docker secrets. Use a variável direta ou a variante `_FILE`, nunca ambas. O processo precisa conseguir ler o arquivo. No CapRover, associar os secrets ao serviço pelo Service Update Override; os valores não entram no repositório nem na imagem. A credencial de migração é exclusiva da tarefa de migração.

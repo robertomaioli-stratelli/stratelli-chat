@@ -1,5 +1,7 @@
+import { loadSecrets } from "../secrets";
 import { dataSource } from "./source";
 async function migrate() {
+  loadSecrets(process.env);
   const db = dataSource(true);
   try {
     await db.initialize();

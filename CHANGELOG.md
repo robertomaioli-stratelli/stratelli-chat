@@ -1,5 +1,9 @@
 # Alterações
 
+## 0.2.1 — 2026-09-30
+
+- Suporte a credenciais montadas como Docker secrets para homologação.
+
 ## 0.2.0 — 2026-09-30
 
 - PostgreSQL próprio com migração versionada e histórico persistente de conversas, respostas e avaliações.

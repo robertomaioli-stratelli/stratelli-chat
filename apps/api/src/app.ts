@@ -17,6 +17,8 @@ import { History } from "./database/history";
 import { answerDemo } from "./demo";
 import { access, homologEnabled } from "./access";
 
+import { loadSecrets } from "./secrets";
+
 const uuid = (value: unknown): value is string =>
   typeof value === "string" &&
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
@@ -33,6 +35,7 @@ function record(body: unknown, keys: string[]): Record<string, unknown> {
   return body as Record<string, unknown>;
 }
 export async function createApp() {
+  loadSecrets(process.env);
   const db = dataSource();
   await db.initialize();
   const history = new History(db);

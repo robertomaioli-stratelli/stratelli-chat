@@ -1,6 +1,6 @@
 {
   "name": "@stratelli/chat-api",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "scripts": {
     "dev": "concurrently -k \"tsc -w\" \"node --watch --env-file=.env.development dist/main.js\"",
